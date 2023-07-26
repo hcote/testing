@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Magic } from 'magic-sdk';
-import { AuthExtension } from '@magic-ext/auth';
+// import { AuthExtension } from '@magic-ext/auth';
 import { OAuthExtension } from '@magic-ext/oauth';
 import { WebAuthnExtension } from '@magic-ext/webauthn';
 import { GDKMSExtension } from '@magic-ext/gdkms';
 import Web3 from 'web3';
 import './App.css';
 
-export const magic = new Magic('pk_live_5518C9C60F84EED6', {
-  endpoint: 'https://auth-makrandgupta-sc-61376-upgrade-phantom-node-version.stagef.magic.link',
+// MA prod - pk_live_8D40A7E251F283ED
+// MC prod - pk_live_5B191CBA25A24CAA
+export const magic = new Magic('pk_live_8D40A7E251F283ED', {
   network: {
     rpcUrl: 'https://sepolia.infura.io/v3/23131c7335bc4a7e8c896624f61fad40',
   },
-  extensions: [new AuthExtension(), new OAuthExtension(), new WebAuthnExtension(), new GDKMSExtension()],
+  extensions: [
+    // new AuthExtension(), 
+    new OAuthExtension(), new WebAuthnExtension(), new GDKMSExtension()],
 });
 
 function App() {
@@ -34,33 +37,6 @@ function App() {
       }
     })();
   }, []);
-
-  // magic link with redirect URI
-  // useEffect(() => {
-  //   magic.auth
-  //     .loginWithCredential()
-  //     .then(console.log)
-  //     .catch(console.error);
-  // }, []);
-
-  // Oauth
-  // useEffect(() => {
-  //   (async function() {
-  //     console.log('magic.oauth', magic.oauth);
-  //     const result = await magic.oauth.getRedirectResult();
-  //     console.log('oauth res', result);
-  //     setUser(result);
-  //   })();
-  // }, []);
-
-  // WebAuthn
-  // useEffect(() => {
-  //   (async function() {
-  //     const result = await magic.webauthn.getMetadata();
-  //     console.log('webauthn res', result);
-  //     setUser(result);
-  //   })();
-  // }, []);
 
   const login = async () => {
     try {
@@ -120,18 +96,7 @@ function App() {
     try {
       await magic.user.logout();
       console.log('logout complete');
-    } catch (error) {
-      console.log(error);
       setUser(null)
-    }
-  };
-
-  const credential = async () => {
-    try {
-      const did = await magic.auth.loginWithCredential();
-      console.log('did', did);
-      const data = await magic.user.getInfo();
-      setUser(data);
     } catch (error) {
       console.log(error);
     }
@@ -333,7 +298,6 @@ function App() {
           <button onClick={magicLink}>Magic Link</button>
           <button onClick={magicLinkRedirect}>Magic Link w Redirect</button>
           <button onClick={sms}>SMS</button>
-          {/* <button onClick={credential}>Credential</button> */}
           <h2>User</h2>
           <button onClick={isLoggedIn}>isLoggedIn</button>
           <button onClick={getInfo}>getInfo</button>
@@ -350,10 +314,6 @@ function App() {
           <button onClick={oauth}>Oauth</button>
           <h2>WebAuthn</h2>
           <button onClick={webauthn}>WebAuthn</button>
-          <h2>MWS</h2>
-          <a href="https://codesandbox.io/s/affectionate-bogdan-5jkrjh?file=/src/components/MagicWidget.js">
-            Link to codesandbox demo (is broken, will fix)
-          </a>
           <h2>GDKMS</h2>
           <button onClick={encryptAndDecrypt}>Encrypt & decrypt</button>
           <h1>MC</h1>
@@ -386,13 +346,6 @@ function App() {
           >
             getInfo (deprecating)
           </button>
-          {/* <button
-            onClick={() => {
-              magic.wallet.getWalletType().then(console.log).catch(console.log);
-            }}
-          >
-            getWalletType (deprecating)
-          </button> */}
           <button
             onClick={() => {
               magic.wallet.disconnect().then(console.log).catch(console.log);
